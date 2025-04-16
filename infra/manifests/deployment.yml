@@ -25,4 +25,4 @@ spec:
       volumes:
         - name: static-website-volume
           gitRepo:
-            repository: https://github.com/abdennour/example-static-website.git
+            repository: https://github.com/atxpaul/example-website.git
