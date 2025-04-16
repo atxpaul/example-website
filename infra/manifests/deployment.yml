@@ -18,8 +18,15 @@ spec:
           emptyDir: {}
       initContainers:
         - name: clone-website
-          image: alpine/git
-          command: ["sh", "-c", "git clone --depth 1 https://github.com/atxpaul/example-website.git /mnt"]
+          image: node:20-alpine
+          workingDir: /mnt
+          command:
+            - sh
+            - -c
+            - |
+              git clone --depth 1 https://github.com/atxpaul/example-website.git . && \
+              npm install && \
+              npm run build
           volumeMounts:
             - name: website
               mountPath: /mnt
@@ -31,3 +38,4 @@ spec:
           volumeMounts:
             - name: website
               mountPath: /usr/share/nginx/html
+              subPath: dist
