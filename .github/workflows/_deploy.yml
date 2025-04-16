@@ -1,0 +1,30 @@
+on:
+    workflow_call:
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        env:
+            KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Configure kubectl
+              uses: azure/setup-kubectl@v3
+              with:
+                  version: 'latest'
+
+            - name: Configure kubeconfig file
+              run: |
+                  mkdir -p $HOME/.kube
+                  echo "$KUBECONFIG_DATA" > $HOME/.kube/config
+                  head -n 2 $HOME/.kube/config
+
+            - name: Validate manifests
+              run: |
+                  kubectl apply --dry-run=client -f manifests/
+
+            - name: Apply manifests
+              run: |
+                  kubectl apply -f manifests/
