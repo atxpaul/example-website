@@ -13,16 +13,21 @@ spec:
       labels:
         app: static-website-test
     spec:
+      volumes:
+        - name: website
+          emptyDir: {}
+      initContainers:
+        - name: clone-website
+          image: alpine/git
+          command: ["sh", "-c", "git clone --depth 1 https://github.com/atxpaul/example-website.git /mnt"]
+          volumeMounts:
+            - name: website
+              mountPath: /mnt
       containers:
-        - name: static-website-test
+        - name: nginx
           image: nginx:alpine
           ports:
-          - containerPort: 80
+            - containerPort: 80
           volumeMounts:
-            - mountPath: /usr/share/nginx/html
-              subPath: example-static-website
-              name: static-website-volume
-      volumes:
-        - name: static-website-volume
-          gitRepo:
-            repository: https://github.com/atxpaul/example-website.git
+            - name: website
+              mountPath: /usr/share/nginx/html
