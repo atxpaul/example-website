@@ -28,3 +28,7 @@ jobs:
             - name: Apply manifests
               run: |
                   kubectl apply -f infra/manifests/
+
+            - name: Restart deployment
+              run: |
+                  kubectl rollout restart deployment static-website-test -n test
